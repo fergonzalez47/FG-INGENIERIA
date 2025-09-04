@@ -34,6 +34,12 @@ h3 {
     color: #0D1333
 }
 
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 body {
     font-family: 'Inter', sans-serif;
     /* line-height: 1.6; */
@@ -327,7 +333,7 @@ section {
     overflow-x: hidden;
     overflow-y: hidden;
     scroll-behavior: auto;
-    
+
 }
 
 .testimonial {
@@ -538,10 +544,11 @@ section {
 
 .about-card-text p {
     font-size: 0.86rem;
-    
+
     color: #555;
     line-height: 1.4;
 }
+
 .btn-cta-about {
     display: inline-block;
     max-width: 300px;
@@ -976,11 +983,18 @@ textarea {
 
 @media screen and (max-width: 480px) {
 
-    /* section {
-        justify-content: center;
-        margin: 0 auto;
+    .service-items {
+        grid-template-columns: 1fr;
+        /* 1 columna en pantallas muy chicas */
+        padding: 2rem 1rem;
+        /* menos padding lateral */
+    }
 
-    } */
+    .portfolio-items {
+        grid-template-columns: 1fr;
+        /* evita que la min-width de 440px rompa el layout */
+    }
+
 
     .testimonial {
         min-width: 250px;
