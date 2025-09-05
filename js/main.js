@@ -11,6 +11,26 @@ hamburger.addEventListener('click', () => {
 
 
 
+// Scrool aniation
+
+
+
+const scrollElements = document.querySelectorAll('.scroll-animate');
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+            // Si quiero que solo aparezca una vez:
+            observer.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.3 }); // 30% visible para activar
+
+scrollElements.forEach(el => observer.observe(el));
+
+
+
 
 
 // carrusel de testimonios
