@@ -16,7 +16,6 @@ hamburger.addEventListener('click', () => {
 
 
 const scrollElements = document.querySelectorAll('.scroll-animate');
-
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -26,7 +25,6 @@ const observer = new IntersectionObserver((entries) => {
         }
     });
 }, { threshold: 0.3 }); // 30% visible para activar
-
 scrollElements.forEach(el => observer.observe(el));
 
 
@@ -37,26 +35,30 @@ scrollElements.forEach(el => observer.observe(el));
 
 const carousel = document.querySelector('.testimonial-carousel');
 let scrollPosition = 0;
-const speed = 0.5; // velocidad (px por frame aprox.)
+const speed = 0.5;
+
+// duplicar contenido para efecto infinito
+carousel.innerHTML += carousel.innerHTML;
 
 function autoScroll() {
     scrollPosition += speed;
 
-    if (scrollPosition >= carousel.scrollWidth - carousel.clientWidth) {
-        scrollPosition = 0; // reinicia cuando llega al final
+    if (scrollPosition >= carousel.scrollWidth / 2) {
+        // reiniciar suavemente
+        scrollPosition = 0;
     }
 
     carousel.scrollLeft = scrollPosition;
     requestAnimationFrame(autoScroll);
 }
-
 autoScroll();
 
 
 
 
 
-// OFRMULARIO
+
+// FOFRMULARIO
 const regiones = [
     { "nombre": "Arica y Parinacota", "comunas": ["Arica", "Camarones", "Putre", "General Lagos"] },
     { "nombre": "Tarapacá", "comunas": ["Iquique", "Alto Hospicio", "Pozo Almonte", "Camiña", "Colchane", "Huara", "Pica"] },
@@ -128,32 +130,96 @@ function validateContactForm() {
     return valid;
 }
 
+
+// --- Función para mostrar mensaje modal ---
+function showModalMessage(message, isSuccess = true) {
+    // Crear modal si no existe
+    let modal = document.getElementById("modal-message");
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "modal-message";
+        modal.style.position = "fixed";
+        modal.style.top = "0";
+        modal.style.left = "0";
+        modal.style.width = "100%";
+        modal.style.height = "100%";
+        modal.style.backgroundColor = "rgba(0,0,0,0.5)";
+        modal.style.display = "flex";
+        modal.style.justifyContent = "center";
+        modal.style.alignItems = "center";
+        modal.style.zIndex = "1000";
+
+        const box = document.createElement("div");
+        box.style.backgroundColor = "#fff";
+        box.style.padding = "2rem";
+        box.style.borderRadius = "10px";
+        box.style.textAlign = "center";
+        box.id = "modal-box";
+
+        const text = document.createElement("p");
+        text.id = "modal-text";
+        box.appendChild(text);
+
+        const closeBtn = document.createElement("button");
+        closeBtn.textContent = "Cerrar";
+        closeBtn.style.marginTop = "1rem";
+        closeBtn.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+        box.appendChild(closeBtn);
+
+        modal.appendChild(box);
+        document.body.appendChild(modal);
+    }
+
+    document.getElementById("modal-text").textContent = message;
+    const box = document.getElementById("modal-box");
+    box.classList.remove("success", "error");
+    box.classList.add(isSuccess ? "success" : "error");
+
+    modal.style.display = "flex";
+}
+
+
+
+
 // Envío
+
+// --- Envío ---
 document.getElementById("sendButton").addEventListener("click", async (e) => {
     e.preventDefault();
-    if (validateContactForm()) {
-        const data = {
-            name: document.getElementById("name").value,
-            phone: document.getElementById("phone").value,
-            email: document.getElementById("email").value,
-            direccion: document.getElementById("direccion").value,
-            region: document.getElementById("region").value,
-            comuna: document.getElementById("comuna").value,
-            asunto: document.getElementById("subject").value,
-            mensaje: document.getElementById("mensaje").value,
-        };
 
-        try {
-            const res = await fetch("../../sendContactInf.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
-            const result = await res.json();
-            document.getElementById("form-success").textContent = result.message;
-            document.getElementById("form-success").style.display = "block";
-        } catch (err) {
-            alert("Error enviando formulario. Intenta más tarde.");
+    if (!validateContactForm()) return;
+
+    const data = {
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value,
+        direccion: document.getElementById("direccion").value,
+        region: document.getElementById("region").value,
+        comuna: document.getElementById("comuna").value,
+        asunto: document.getElementById("subject").value,
+        mensaje: document.getElementById("mensaje").value
+    };
+
+    try {
+        const res = await fetch("sendContactInf.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        // Mostrar mensaje modal
+        showModalMessage(result.message, result.success);
+
+        // Reset formulario si fue éxito
+        if (result.success) {
+            document.getElementById("contact-form").reset();
         }
+
+    } catch (err) {
+        showModalMessage("Error enviando formulario. Intenta más tarde.", false);
     }
 });
