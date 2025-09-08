@@ -1,4 +1,5 @@
 <?php
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -35,9 +36,10 @@ try {
         throw new Exception("El correo electrónico no es válido.");
     }
 
-    // Configuración de correo
+    // Cargar credenciales desde archivo seguro
     $config = include('/home3/fygelectrica/config-mail.php');
 
+    // Correo al admin
     $mail = new PHPMailer(true);
     $mail->isSMTP();
     $mail->Host       = $config['host'];
@@ -48,10 +50,9 @@ try {
     $mail->Port       = $config['port'];
 
     $mail->setFrom($config['from_email'], $config['from_name']);
-    $mail->addAddress($config['from_email'], 'F&G Ingeniería Eléctrica');
+    $mail->addAddress($config['from_email'], 'FYG Electrical');
 
     $mail->isHTML(true);
-    $mail->CharSet = 'UTF-8';
     $mail->Subject = "Nuevo mensaje: $asunto";
     $mail->Body = "
         <h2>Nuevo mensaje desde la web</h2>
@@ -81,21 +82,17 @@ try {
         $mail2->addAddress($email, $name);
 
         $mail2->isHTML(true);
-        $mail2->CharSet = 'UTF-8';
         $mail2->Subject = "Confirmación de recepción de tu mensaje";
         $mail2->Body = "
             <h2>Hola $name</h2>
             <p>Hemos recibido tu mensaje y nos pondremos en contacto a la brevedad.</p>
             <p><strong>Tu mensaje:</strong><br>$mensaje</p>
-            <p>Gracias por escribirnos.<br>F&G Ingeniería Eléctrica</p>
+            <p>Gracias por escribirnos.<br>FYG Electrical</p>
         ";
         $mail2->send();
     }
 
     echo json_encode(['success' => true, 'message' => '✅ Tu mensaje fue enviado con éxito.']);
-
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => '❌ Error: ' . $e->getMessage()]);
 }
-
-

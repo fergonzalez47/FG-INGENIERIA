@@ -3,11 +3,23 @@ import { validateTextarea, validateSubject, validateEmail, validateName, validat
 
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
+const navLinks = document.querySelectorAll('.nav-menu ul li a');
 
+// Función para abrir/cerrar el menú
 hamburger.addEventListener('click', () => {
     navMenu.classList.toggle('active');
+    hamburger.classList.toggle('active');
 });
 
+// Cerrar menú al hacer click en un enlace (solo en móvil)
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        if (window.innerWidth <= 992) { // Solo aplica en pantallas pequeñas
+            navMenu.classList.remove('active');
+            hamburger.classList.remove('active');
+        }
+    });
+});
 
 
 
@@ -16,6 +28,7 @@ hamburger.addEventListener('click', () => {
 
 
 const scrollElements = document.querySelectorAll('.scroll-animate');
+
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -25,6 +38,7 @@ const observer = new IntersectionObserver((entries) => {
         }
     });
 }, { threshold: 0.3 }); // 30% visible para activar
+
 scrollElements.forEach(el => observer.observe(el));
 
 
@@ -51,6 +65,7 @@ function autoScroll() {
     carousel.scrollLeft = scrollPosition;
     requestAnimationFrame(autoScroll);
 }
+
 autoScroll();
 
 
@@ -58,7 +73,7 @@ autoScroll();
 
 
 
-// FOFRMULARIO
+// OFRMULARIO
 const regiones = [
     { "nombre": "Arica y Parinacota", "comunas": ["Arica", "Camarones", "Putre", "General Lagos"] },
     { "nombre": "Tarapacá", "comunas": ["Iquique", "Alto Hospicio", "Pozo Almonte", "Camiña", "Colchane", "Huara", "Pica"] },
@@ -166,6 +181,16 @@ function showModalMessage(message, isSuccess = true) {
         closeBtn.addEventListener("click", () => {
             modal.style.display = "none";
         });
+        
+        
+        
+        closeBtn.addEventListener("click", () => {
+            modal.style.display = "none";
+            // Recargar la página al cerrar
+            location.reload();
+        });
+
+        
         box.appendChild(closeBtn);
 
         modal.appendChild(box);
@@ -185,9 +210,11 @@ function showModalMessage(message, isSuccess = true) {
 
 // Envío
 
-// --- Envío ---
+
 document.getElementById("sendButton").addEventListener("click", async (e) => {
     e.preventDefault();
+
+    const sendBtn = document.getElementById("sendButton");
 
     if (!validateContactForm()) return;
 
@@ -201,6 +228,11 @@ document.getElementById("sendButton").addEventListener("click", async (e) => {
         asunto: document.getElementById("subject").value,
         mensaje: document.getElementById("mensaje").value
     };
+
+    // Deshabilitar botón y mostrar spinner
+    sendBtn.disabled = true;
+    const originalText = sendBtn.textContent;
+    sendBtn.innerHTML = 'Enviando... <span class="spinner"></span>';
 
     try {
         const res = await fetch("sendContactInf.php", {
@@ -217,9 +249,16 @@ document.getElementById("sendButton").addEventListener("click", async (e) => {
         // Reset formulario si fue éxito
         if (result.success) {
             document.getElementById("contact-form").reset();
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
+
 
     } catch (err) {
         showModalMessage("Error enviando formulario. Intenta más tarde.", false);
+    } finally {
+        // Volver a habilitar el botón y restaurar texto
+        sendBtn.disabled = false;
+        sendBtn.textContent = originalText;
     }
 });
+
