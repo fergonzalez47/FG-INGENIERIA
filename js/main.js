@@ -3,7 +3,7 @@ import { validateTextarea, validateSubject, validateEmail, validateName, validat
 
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
-const navLinks = document.querySelectorAll('.nav-menu ul li a');
+const navLinks = document.querySelectorAll('.nav-menu a');
 
 // Función para abrir/cerrar el menú
 hamburger.addEventListener('click', () => {
@@ -25,19 +25,22 @@ navLinks.forEach(link => {
 
 // Scrool aniation
 
-
-
 const scrollElements = document.querySelectorAll('.scroll-animate');
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry, index) => {
         if (entry.isIntersecting) {
-            entry.target.classList.add('show');
-            // Si quiero que solo aparezca una vez:
-            observer.unobserve(entry.target);
+            // Usamos requestAnimationFrame para no bloquear el scroll
+            window.requestAnimationFrame(() => {
+                // Delay opcional según índice para escalonar animaciones
+                setTimeout(() => {
+                    entry.target.classList.add('show');
+                    observer.unobserve(entry.target); // solo una vez
+                }, index * 50); // 50ms de diferencia entre cada elemento
+            });
         }
     });
-}, { threshold: 0.3 }); // 30% visible para activar
+}, { threshold: 0.2 }); // se activa cuando 20% del elemento es visible
 
 scrollElements.forEach(el => observer.observe(el));
 

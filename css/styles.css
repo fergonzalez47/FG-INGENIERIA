@@ -42,6 +42,7 @@ html,
 body {
     max-width: 100%;
     overflow-x: hidden;
+    
 }
 
 body {
@@ -50,6 +51,10 @@ body {
     color: #333;
     padding-top: 85px;
     background-color: #f7f8fa;
+}
+
+main {
+    background-color: red;
 }
 
 p {
@@ -631,7 +636,7 @@ section {
 
 .contact-form-container{
     border-radius: 10px;
-    padding-top: 1.5rem;
+    padding-top: 1.25rem;
     padding-bottom: 1.5rem;;
     background-color: #fff;
 }
@@ -654,8 +659,9 @@ label {
 
 .contact-section .contact-section-instruction {
     text-align: center;
-    margin-bottom: 2rem;
-    font-size: 1rem;
+    margin-bottom: 1rem;
+    padding: 0 1rem;
+    font-size: .8rem;
     color: #555;
 }
 
@@ -953,6 +959,7 @@ textarea {
 /* Modal overlay */
 #modal-message {
     position: fixed;
+    font-family: 'Inter', sans-serif;
     top: 0;
     left: 0;
     width: 100%;
@@ -970,7 +977,7 @@ textarea {
 #modal-box {
     background-color: #fff;
     padding: 2rem;
-    border-radius: 12px;
+    border-radius: 10px;
     width: 90%;
     max-width: 400px;
     text-align: center;
@@ -988,7 +995,7 @@ textarea {
 
 /* Close button */
 #modal-box button {
-    background-color: #007bff;
+    background-color: #002850;
     color: #fff;
     border: none;
     padding: 0.5rem 1.5rem;
@@ -1090,6 +1097,9 @@ textarea {
     /* formulario */
 
 
+    .contact-section {
+        padding: .55rem;
+    }
     .contact-form {
         gap: 0.75rem;
     }
